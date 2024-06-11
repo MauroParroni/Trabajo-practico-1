@@ -1,6 +1,19 @@
 let formularioLogin = document.getElementById("formulario-login");
-let usuario = "admin";
-let contraseña = "admin";
+let userdata;
+
+fetch('./user.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('La solicitud no fue exitosa');
+    }
+    return response.json();
+  })
+  .then(data => {
+    userdata = data
+  })
+  .catch(error => {
+    console.error('Error al recuperar el JSON:', error);
+  });
 document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("usuarioLogueado")) {
     let botonLogin = document.querySelector(".btn.btn-info");
@@ -41,14 +54,14 @@ document.addEventListener("DOMContentLoaded", function () {
             let validation2 = document.querySelector(".tanks")
             if(validation){
                 localStorage.removeItem("usuarioLogueado");
-                window.location.href = "../index.html";
+                location.reload();
             }
             if (validation2){
                 localStorage.removeItem("usuarioLogueado");
-                window.location.href = "../../index.html";
+                location.reload();
             }
           localStorage.removeItem("usuarioLogueado");
-          window.location.href = ".index.html";
+          location.reload();
       });
     navItemDropdown.appendChild(dropdownToggle);
     navItemDropdown.appendChild(dropdownMenu);
@@ -71,8 +84,8 @@ formularioLogin?.addEventListener("submit", function (e) {
     modalBootstrap.hide();
   });
 
-  if (email === usuario && contra === contraseña) {
-    localStorage.setItem("usuarioLogueado", usuario);
+  if (email === userdata.user && contra === userdata.password) {
+    localStorage.setItem("usuarioLogueado", userdata);
     Swal.fire({
         position: "center",
         icon: "success",
@@ -81,7 +94,7 @@ formularioLogin?.addEventListener("submit", function (e) {
         timer: 1500
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "index.html";
+            window.location.href = "./index.html";
         }
     });
     if (localStorage.getItem("usuarioLogueado")) {
